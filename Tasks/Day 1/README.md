@@ -26,9 +26,25 @@ There are four commands it does not cover that are important to know:
 
 So, if git does all of this magic on my computer why do I need to know about Github? Well, Github allows us to host our codebase on the internet so other developers can access it. It also provides us a way to visually review changes and collaborate on code. At the end of onboarding, we will be using its *pull request* feature which allows you to *pull* your changes into a different branch. Typically, we prevent developers from pushing into the "main" branch and instead require pull requests. This allows us to review the changes and ensure that the *main* branch always remains stable.
 
-## Python
+### Cloning the Repository
 
-Python is a high-level programming language that is widely used in the software industry. It is known for its simplicity and readability, making it an excellent language for beginners to learn. If you have not already installed Python, please refer back to the [Getting Started](/README.md) section for instructions on how to do so.
+If you haven't already, create a Github account and send me your username so I can add you to the organization. Next, clone the repository by running the following command in your terminal:
+
+```bash
+git clone https://github.com/SoonerRobotics/onboarding_software_2024
+```
+
+If you have any issues with this step, please reach out to me or any of the other team members for help.
+
+### Creating a Branch
+
+Create a new branch by running the following command in your terminal:
+
+```bash
+git checkout -b <branch-name>
+```
+
+For the purposes of onboarding, your branch name should be `onboarding/<your-name>`. In practice, we have various branch naming standards we try to follow on all of our repositories (but is not always the case).
 
 ## Tasks
 

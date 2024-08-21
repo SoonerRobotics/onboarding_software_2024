@@ -1,5 +1,3 @@
-# Original Source: https://gist.github.com/vinothpandian/4337527
-
 import random
 import pygame
 import sys
@@ -8,173 +6,153 @@ from pygame.locals import *
 pygame.init()
 fps = pygame.time.Clock()
 
-# colors
-WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLACK = (0, 0, 0)
-
-# globals
-WIDTH = 600
-HEIGHT = 400
+# Globals
+WIDTH, HEIGHT = 600, 400
 BALL_RADIUS = 10
-PAD_WIDTH = 8
-PAD_HEIGHT = 80
-HALF_PAD_WIDTH = PAD_WIDTH / 2
-HALF_PAD_HEIGHT = PAD_HEIGHT / 2
-ball_pos = [0, 0]
-ball_vel = [0, 0]
-paddle1_vel = 0
-paddle2_vel = 0
-l_score = 0
-r_score = 0
+BALL_SPEED = 4
 
-# canvas declaration
+# Set up the display
 window = pygame.display.set_mode((WIDTH, HEIGHT), 0, 32)
 pygame.display.set_caption('SCR Onboarding 2024 | Pong')
 
-# Define a ball structure
-class Ball:
-    def __init__(self, x, y, radius, color):
+# A basic point structure
+class Point:
+    def __init__(self, x, y):
         self.x = x
         self.y = y
+
+# Define the ball class
+class Ball:
+    def __init__(self, position, radius, color):
+        self.position = position
+        self.velocity = Point(random.choice([-1, 1]) * BALL_SPEED, random.choice([-1, 1]) * BALL_SPEED)
         self.radius = radius
         self.color = color
-        self.velocity = [1, 1]
 
-def ball_init(right):
-    global ball_pos, ball_vel  # these are vectors stored as lists
-    ball_pos = [WIDTH / 2, HEIGHT / 2]
-    horz = random.randrange(2, 4)
-    vert = random.randrange(1, 3)
+    def draw(self, canvas):
+        pygame.draw.circle(canvas, self.color, [self.position.x, self.position.y], self.radius, 0)
 
-    if right == False:
-        horz = - horz
+    def move(self):
+        self.position.x += self.velocity.x
+        self.position.y += self.velocity.y
 
-    ball_vel = [horz, -vert]
+    def bounce(self):
+        self.velocity.x = -self.velocity.x
+        self.velocity.y = random.choice([-1, 1]) * BALL_SPEED
 
-def init():
-    global paddle1_pos, paddle2_pos, paddle1_vel, paddle2_vel, l_score, r_score  # these are floats
-    global score1, score2  # these are ints
-    paddle1_pos = [HALF_PAD_WIDTH - 1, HEIGHT / 2]
-    paddle2_pos = [WIDTH + 1 - HALF_PAD_WIDTH, HEIGHT / 2]
-    l_score = 0
-    r_score = 0
-    if random.randrange(0, 2) == 0:
-        ball_init(True)
-    else:
-        ball_init(False)
+    def checkCollision(self, paddle_left, paddle_right):
+        # Check the paddles
+        if paddle_left.is_colliding(self) or paddle_right.is_colliding(self):
+            self.bounce()
 
+        # Check the walls
+        if self.position.y - self.radius <= 0 or self.position.y + self.radius >= HEIGHT:
+            self.velocity.y = -self.velocity.y
 
-# draw function of canvas
-def draw(canvas):
-    global paddle1_pos, paddle2_pos, ball_pos, ball_vel, l_score, r_score
+        if self.position.x - self.radius <= 0 or self.position.x + self.radius >= WIDTH:
+            self.velocity.x = -self.velocity.x
 
-    canvas.fill(BLACK)
-    pygame.draw.line(canvas, WHITE, [WIDTH / 2, 0], [WIDTH / 2, HEIGHT], 1)
-    pygame.draw.line(canvas, WHITE, [PAD_WIDTH, 0], [PAD_WIDTH, HEIGHT], 1)
-    pygame.draw.line(canvas, WHITE, [WIDTH - PAD_WIDTH, 0], [WIDTH - PAD_WIDTH, HEIGHT], 1)
-    pygame.draw.circle(canvas, WHITE, [WIDTH//2, HEIGHT//2], 70, 1)
+    def wall_index(self):
+        # Check if the ball is hitting the left wall, if so return 0
+        if self.position.x - self.radius <= 0:
+            return 0
 
-    # update paddle's vertical position, keep paddle on the screen
-    if paddle1_pos[1] > HALF_PAD_HEIGHT and paddle1_pos[1] < HEIGHT - HALF_PAD_HEIGHT:
-        paddle1_pos[1] += paddle1_vel
-    elif paddle1_pos[1] == HALF_PAD_HEIGHT and paddle1_vel > 0:
-        paddle1_pos[1] += paddle1_vel
-    elif paddle1_pos[1] == HEIGHT - HALF_PAD_HEIGHT and paddle1_vel < 0:
-        paddle1_pos[1] += paddle1_vel
+        # Check if the ball is hitting the right wall, if so return 1
+        if self.position.x + self.radius >= WIDTH:
+            return 1
 
-    if paddle2_pos[1] > HALF_PAD_HEIGHT and paddle2_pos[1] < HEIGHT - HALF_PAD_HEIGHT:
-        paddle2_pos[1] += paddle2_vel
-    elif paddle2_pos[1] == HALF_PAD_HEIGHT and paddle2_vel > 0:
-        paddle2_pos[1] += paddle2_vel
-    elif paddle2_pos[1] == HEIGHT - HALF_PAD_HEIGHT and paddle2_vel < 0:
-        paddle2_pos[1] += paddle2_vel
+        # If the ball is not hitting any wall+
+        return -1
 
-    # update ball
-    ball_pos[0] += float(ball_vel[0])
-    ball_pos[1] += float(ball_vel[1])
+# Define the paddle class
+class Paddle:
+    def __init__(self, position, width, height, color):
+        self.position = position
+        self.width = width
+        self.height = height
+        self.color = color
 
-    # draw paddles and ball
-    pygame.draw.circle(canvas, RED, ball_pos, 20, 0)
-    pygame.draw.polygon(canvas, GREEN, [[paddle1_pos[0] - HALF_PAD_WIDTH, paddle1_pos[1] - HALF_PAD_HEIGHT], [paddle1_pos[0] - HALF_PAD_WIDTH, paddle1_pos[1] + HALF_PAD_HEIGHT], [paddle1_pos[0] + HALF_PAD_WIDTH, paddle1_pos[1] + HALF_PAD_HEIGHT], [paddle1_pos[0] + HALF_PAD_WIDTH, paddle1_pos[1] - HALF_PAD_HEIGHT]], 0)
-    pygame.draw.polygon(canvas, GREEN, [[paddle2_pos[0] - HALF_PAD_WIDTH, paddle2_pos[1] - HALF_PAD_HEIGHT], [paddle2_pos[0] - HALF_PAD_WIDTH, paddle2_pos[1] + HALF_PAD_HEIGHT], [paddle2_pos[0] + HALF_PAD_WIDTH, paddle2_pos[1] + HALF_PAD_HEIGHT], [paddle2_pos[0] + HALF_PAD_WIDTH, paddle2_pos[1] - HALF_PAD_HEIGHT]], 0)
+    def draw(self, canvas):
+        pygame.draw.polygon(canvas, self.color, [[self.position.x - self.width/2, self.position.y - self.height/2], [self.position.x - self.width/2, self.position.y + self.height/2], [self.position.x + self.width/2, self.position.y + self.height/2], [self.position.x + self.width/2, self.position.y - self.height/2]], 0)
 
-    # ball collision check on top and bottom walls
-    if float(ball_pos[1]) <= BALL_RADIUS:
-        ball_vel[1] = - ball_vel[1]
-    if float(ball_pos[1]) >= HEIGHT + 1 - BALL_RADIUS:
-        ball_vel[1] = -ball_vel[1]
+    def move(self, direction):
+        self.position.y += direction
 
-    # ball collison check on gutters or paddles
-    if float(ball_pos[0]) <= BALL_RADIUS + PAD_WIDTH and float(ball_pos[1]) in range(paddle1_pos[1] - HALF_PAD_HEIGHT, paddle1_pos[1] + HALF_PAD_HEIGHT, 1):
-        ball_vel[0] = -ball_vel[0]
-        ball_vel[0] *= 1.1
-        ball_vel[1] *= 1.1
-    elif float(ball_pos[0]) <= BALL_RADIUS + PAD_WIDTH:
-        r_score += 1
-        ball_init(True)
+        if self.position.y - self.height/2 < 0:
+            self.position.y = self.height/2
 
-    if float(ball_pos[0]) >= WIDTH + 1 - BALL_RADIUS - PAD_WIDTH and float(ball_pos[1]) in range(paddle2_pos[1] - HALF_PAD_HEIGHT, paddle2_pos[1] + HALF_PAD_HEIGHT, 1):
-        ball_vel[0] = -ball_vel[0]
-        ball_vel[0] *= 1.1
-        ball_vel[1] *= 1.1
-    elif float(ball_pos[0]) >= WIDTH + 1 - BALL_RADIUS - PAD_WIDTH:
-        l_score += 1
-        ball_init(False)
+        if self.position.y + self.height/2 > HEIGHT:
+            self.position.y = HEIGHT - self.height/2
 
-    # update scores
-    myfont1 = pygame.font.SysFont("Comic Sans MS", 20)
-    label1 = myfont1.render("Score "+str(l_score), 1, (255, 255, 0))
-    canvas.blit(label1, (50, 20))
-
-    myfont2 = pygame.font.SysFont("Comic Sans MS", 20)
-    label2 = myfont2.render("Score "+str(r_score), 1, (255, 255, 0))
-    canvas.blit(label2, (470, 20))
+    def is_colliding(self, ball):
+        return ball.position.x - ball.radius <= self.position.x + self.width/2 and ball.position.x + ball.radius >= self.position.x - self.width/2 and ball.position.y - ball.radius <= self.position.y + self.height/2 and ball.position.y + ball.radius >= self.position.y - self.height/2
 
 
-# keydown handler
-def keydown(event):
-    global paddle1_vel, paddle2_vel
+class Pong:
+    def __init__(self):
+        self.ball = Ball(Point(WIDTH/2, HEIGHT/2), BALL_RADIUS, (255, 255, 255))
+        self.paddle_left = Paddle(Point(10, HEIGHT/2), 10, 60, (255, 255, 255))
+        self.paddle_right = Paddle(Point(WIDTH - 10, HEIGHT/2), 10, 60, (255, 255, 255))
 
-    if event.key == K_UP:
-        paddle2_vel = -8
-    elif event.key == K_DOWN:
-        paddle2_vel = 8
-    elif event.key == K_w:
-        paddle1_vel = -8
-    elif event.key == K_s:
-        paddle1_vel = 8
+        self.score = [0, 0]
 
-# keyup handler
+    def update(self):
+        self.ball.move()
+        self.ball.checkCollision(self.paddle_left, self.paddle_right)
+        self.ai()
+
+        if self.ball.wall_index() == 0:
+            self.reset()
+            self.score[1] += 1
+            print("Player 2 wins!")
+
+        if self.ball.wall_index() == 1:
+            self.reset()
+            self.score[0] += 1
+            print("Player 1 wins!")
+
+        pygame.display.set_caption('SCR Onboarding 2024 | Pong ({} - {})'.format(self.score[0], self.score[1]))
+
+    def draw(self, canvas):
+        canvas.fill((0, 0, 0))
+        self.ball.draw(canvas)
+        self.paddle_left.draw(canvas)
+        self.paddle_right.draw(canvas)
+
+    def movePaddle(self, direction):
+        self.paddle_left.move(direction)
+
+    def ai(self):
+        if self.ball.position.y < self.paddle_right.position.y:
+            self.paddle_right.move(-10)
+
+        if self.ball.position.y > self.paddle_right.position.y:
+            self.paddle_right.move(10)
+
+    def reset(self):
+        self.ball = Ball(Point(WIDTH/2, HEIGHT/2), BALL_RADIUS, (255, 255, 255))
+        self.paddle_left = Paddle(Point(10, HEIGHT/2), 10, 60, (255, 255, 255))
+        self.paddle_right = Paddle(Point(WIDTH - 10, HEIGHT/2), 10, 60, (255, 255, 255))
 
 
-def keyup(event):
-    global paddle1_vel, paddle2_vel
+pong = Pong()
 
-    if event.key in (K_w, K_s):
-        paddle1_vel = 0
-    elif event.key in (K_UP, K_DOWN):
-        paddle2_vel = 0
-
-
-init()
-
-
-# game loop
 while True:
-
-    draw(window)
-
     for event in pygame.event.get():
-
-        if event.type == KEYDOWN:
-            keydown(event)
-        elif event.type == KEYUP:
-            keyup(event)
-        elif event.type == QUIT:
+        if event.type == QUIT:
             pygame.quit()
             sys.exit()
 
+    keys = pygame.key.get_pressed()
+
+    if keys[K_UP]:
+        pong.movePaddle(-10)
+
+    if keys[K_DOWN]:
+        pong.movePaddle(10)
+
+    pong.update()
+    pong.draw(window)
+
     pygame.display.update()
-    fps.tick(60)
+    fps.tick(30)
