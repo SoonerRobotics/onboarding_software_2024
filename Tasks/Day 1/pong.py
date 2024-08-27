@@ -8,8 +8,8 @@ fps = pygame.time.Clock()
 
 # Globals
 WIDTH, HEIGHT = 600, 400
-BALL_RADIUS = 10
-BALL_SPEED = 4
+BALL_RADIUS = 1
+BALL_SPEED = 1
 
 # Set up the display
 window = pygame.display.set_mode((WIDTH, HEIGHT), 0, 32)
@@ -55,11 +55,11 @@ class Ball:
     def wall_index(self):
         # Check if the ball is hitting the left wall, if so return 0
         if self.position.x - self.radius <= 0:
-            return 0
+            return 1
 
         # Check if the ball is hitting the right wall, if so return 1
         if self.position.x + self.radius >= WIDTH:
-            return 1
+            return 0
 
         # If the ball is not hitting any wall+
         return -1
@@ -78,14 +78,14 @@ class Paddle:
     def move(self, direction):
         self.position.y += direction
 
-        if self.position.y - self.height/2 < 0:
-            self.position.y = self.height/2
+        if self.position.y - self.height / 2 < 0:
+            self.position.y = self.height / 2
 
-        if self.position.y + self.height/2 > HEIGHT:
-            self.position.y = HEIGHT - self.height/2
+        if self.position.y + self.height / 2 > HEIGHT:
+            self.position.y = HEIGHT - self.height / 2
 
     def is_colliding(self, ball):
-        return ball.position.x - ball.radius <= self.position.x + self.width/2 and ball.position.x + ball.radius >= self.position.x - self.width/2 and ball.position.y - ball.radius <= self.position.y + self.height/2 and ball.position.y + ball.radius >= self.position.y - self.height/2
+        return ball.position.x - ball.radius <= self.position.x + self.width / 2 and ball.position.x + ball.radius >= self.position.x - self.width / 2 and ball.position.y - ball.radius <= self.position.y + self.height / 2 and ball.position.y + ball.radius >= self.position.y - self.height / 2
 
 
 class Pong:

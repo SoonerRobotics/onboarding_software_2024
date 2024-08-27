@@ -46,9 +46,37 @@ git checkout -b <branch-name>
 
 For the purposes of onboarding, your branch name should be `onboarding/<your-name>`. In practice, we have various branch naming standards we try to follow on all of our repositories (but is not always the case).
 
+### Installing Dependencies
+
+Run the following command in the root directory of this project to install the dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Tasks
 
 ### Pong
 
-Okay, so you may be wondering "Well Dylan, isn't Pong a bit of a stretch to start with?" and to that I say yes it definitely is. We will not be implementing any of the programs over the next few days from scratch, but rather we will be fixing various issues and learning how to work with an existing codebase. This will give you a good idea of what it is like to navigate through someone else's code and provide some additional problem solving skills. We try to keep our codebases well documented and easy to read, but as the lead software developer for the last two years I can assure you that is not always the case.
-<!-- TODO: INSERT PICTURE OF REALLY BAD CODE HERE -->
+Okay, so you may be wondering "Well Dylan, isn't Pong a bit of a stretch to start with?" and to that I say yes it definitely is. We will not be implementing any of the programs over the next few days from scratch, but rather we will be fixing various issues and learning how to work with an existing codebase. This will give you a good idea of what it is like to navigate through someone else's code and provide some additional problem solving skills. We try to keep our codebases well documented and easy to read, but as the lead software developer for the last two years I can assure you that is not always the case. Below is a list of "features" or bugs that need to be implemented/fixed within pong, most of the tasks these will be basic and require minimal programming knowledge. Make sure every time you fix or implement one of these features you make a new **commit** with a somewhat descriptive message!
+- The ball is way too small, make it bigger.
+- The ball is way too slow, make it faster.
+- For some reason the ball is hitting my side and giving me a point.
+- Change the left paddle to be a sky blue (#87CEEB).
+- Change the right paddle to be magenta (#4C004C).
+- The score is incrementing by 2 instead of 1.
+- The year is wrong in the applications title.
+
+### Snake
+
+Alright, so we are gonna do what we did before but with snake. Same idea, fix/implement the points below and make a new commit for each one.
+- Comic Sans is a terrible font, change it to something else.
+- The score is decrementing instead of incrementing.
+- The fruit is blue, why is the fruit blue? Change it to red.
+- If the snake is moving right and I press left it should not let me.
+- Add the ability to play with the arrow keys.
+
+And if you want a slightly more challenging task:
+- Add the ability to (un)pause the game by pressing the space bar.
+- Add the ability to restart the game by pressing the 'r' key.
+- Let the snake wrap around the screen instead of dying when it hits the wall.
