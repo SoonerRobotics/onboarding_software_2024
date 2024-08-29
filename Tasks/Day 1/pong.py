@@ -8,8 +8,9 @@ fps = pygame.time.Clock()
 
 # Globals
 WIDTH, HEIGHT = 600, 400
-BALL_RADIUS = 1
-BALL_SPEED = 1
+BALL_RADIUS = 5
+BALL_SPEED = 5
+BALL_ACCELERATION = 1.1
 
 # Set up the display
 window = pygame.display.set_mode((WIDTH, HEIGHT), 0, 32)
@@ -37,7 +38,7 @@ class Ball:
         self.position.y += self.velocity.y
 
     def bounce(self):
-        self.velocity.x = -self.velocity.x
+        self.velocity.x = -self.velocity.x * BALL_ACCELERATION # :3
         self.velocity.y = random.choice([-1, 1]) * BALL_SPEED
 
     def checkCollision(self, paddle_left, paddle_right):
@@ -55,11 +56,11 @@ class Ball:
     def wall_index(self):
         # Check if the ball is hitting the left wall, if so return 0
         if self.position.x - self.radius <= 0:
-            return 1
+            return 0
 
         # Check if the ball is hitting the right wall, if so return 1
         if self.position.x + self.radius >= WIDTH:
-            return 0
+            return 1
 
         # If the ball is not hitting any wall+
         return -1
@@ -91,8 +92,8 @@ class Paddle:
 class Pong:
     def __init__(self):
         self.ball = Ball(Point(WIDTH/2, HEIGHT/2), BALL_RADIUS, (255, 255, 255))
-        self.paddle_left = Paddle(Point(10, HEIGHT/2), 10, 60, (255, 255, 255))
-        self.paddle_right = Paddle(Point(WIDTH - 10, HEIGHT/2), 10, 60, (255, 255, 255))
+        self.paddle_left = Paddle(Point(10, HEIGHT/2), 10, 60, (135, 206, 235))
+        self.paddle_right = Paddle(Point(WIDTH - 10, HEIGHT/2), 10, 60, (76, 0, 76))
 
         self.score = [0, 0]
 
@@ -130,9 +131,9 @@ class Pong:
             self.paddle_right.move(10)
 
     def reset(self):
-        self.ball = Ball(Point(WIDTH/2, HEIGHT/2), BALL_RADIUS, (255, 255, 255))
-        self.paddle_left = Paddle(Point(10, HEIGHT/2), 10, 60, (255, 255, 255))
-        self.paddle_right = Paddle(Point(WIDTH - 10, HEIGHT/2), 10, 60, (255, 255, 255))
+        self.ball = Ball(Point(WIDTH/2, HEIGHT/2), BALL_RADIUS, self.ball.color)
+        self.paddle_left = Paddle(Point(10, HEIGHT/2), 10, 60, self.paddle_left.color)
+        self.paddle_right = Paddle(Point(WIDTH - 10, HEIGHT/2), 10, 60, self.paddle_right.color)
 
 
 pong = Pong()
