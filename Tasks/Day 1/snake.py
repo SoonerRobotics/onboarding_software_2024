@@ -125,7 +125,7 @@ class SnakeGame:
 
         if keys_pressed[pygame.K_w] & (self.direction != Direction.DOWN):
             self.direction = Direction.UP
-        if keys_pressed[pygame.K_a]:
+        if keys_pressed[pygame.K_a] & (self.direction != Direction.RIGHT):
             self.direction = Direction.LEFT
         if keys_pressed[pygame.K_s] & (self.direction != Direction.UP):
             self.direction = Direction.DOWN
