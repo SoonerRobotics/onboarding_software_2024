@@ -5,7 +5,7 @@ from collections import namedtuple
 import numpy as np
 
 pygame.init()
-font = pygame.font.SysFont('comic sans', 25)
+font = pygame.font.SysFont('wingdings', 25)
 
 class Direction(Enum):
     RIGHT = 1
