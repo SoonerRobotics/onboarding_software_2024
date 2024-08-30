@@ -96,9 +96,9 @@ class SnakeGame:
     def is_collision(self, pt=None):
         if pt is None:
             pt = self.head
-        # hits boundary
-        if pt.x > self.w - BLOCK_SIZE or pt.x < 0 or pt.y > self.h - BLOCK_SIZE or pt.y < 0:
-            return True
+        # hits boundary (no it doesn't, we're on a torus)
+        # if pt.x > self.w - BLOCK_SIZE or pt.x < 0 or pt.y > self.h - BLOCK_SIZE or pt.y < 0:
+            # return True
         # hits itself
         if pt in self.snake[1:]:
             return True
@@ -142,8 +142,18 @@ class SnakeGame:
             y += BLOCK_SIZE
         elif self.direction == Direction.UP:
             y -= BLOCK_SIZE
+        x = self._wrap(x, 0, self.w - BLOCK_SIZE)
+        y = self._wrap(y, 0, self.h - BLOCK_SIZE)
 
         self.head = Point(x, y)
+
+    def _wrap(self, num, lowest, highest):
+        if num > highest:
+            return lowest
+        elif num < lowest:
+            return highest
+        else:
+            return num
 
 
 if __name__ == "__main__":
