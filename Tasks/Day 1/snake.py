@@ -123,13 +123,13 @@ class SnakeGame:
     def _move(self):
         keys_pressed = pygame.key.get_pressed()
 
-        if keys_pressed[pygame.K_w] & (self.direction != Direction.DOWN):
+        if (keys_pressed[pygame.K_w] or keys_pressed[pygame.K_UP]) & (self.direction != Direction.DOWN):
             self.direction = Direction.UP
-        if keys_pressed[pygame.K_a] & (self.direction != Direction.RIGHT):
+        if (keys_pressed[pygame.K_a] or keys_pressed[pygame.K_LEFT]) & (self.direction != Direction.RIGHT):
             self.direction = Direction.LEFT
-        if keys_pressed[pygame.K_s] & (self.direction != Direction.UP):
+        if (keys_pressed[pygame.K_s] or keys_pressed[pygame.K_DOWN]) & (self.direction != Direction.UP):
             self.direction = Direction.DOWN
-        if keys_pressed[pygame.K_d] & (self.direction != Direction.LEFT):
+        if (keys_pressed[pygame.K_d] or keys_pressed[pygame.K_RIGHT]) & (self.direction != Direction.LEFT):
             self.direction = Direction.RIGHT
 
         x = self.head.x
