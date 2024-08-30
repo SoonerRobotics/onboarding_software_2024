@@ -24,7 +24,7 @@ BLACK = (0,0,0)
 
 # constants
 BLOCK_SIZE = 20
-SPEED = 15
+SPEED = 12
 
 class SnakeGame:
 
