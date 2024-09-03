@@ -7,9 +7,10 @@ pygame.init()
 fps = pygame.time.Clock()
 
 # Globals
-WIDTH, HEIGHT = 600, 400
-BALL_RADIUS = 1
-BALL_SPEED = 1
+WIDTH, HEIGHT = 200, 200
+BALL_RADIUS = 10
+BALL_SPEED = 20
+RED, GREEN, BLUE = random.randint(255, 255), random.randint(255, 255), random.randint(255, 255)
 
 # Set up the display
 window = pygame.display.set_mode((WIDTH, HEIGHT), 0, 32)
@@ -90,7 +91,7 @@ class Paddle:
 
 class Pong:
     def __init__(self):
-        self.ball = Ball(Point(WIDTH/2, HEIGHT/2), BALL_RADIUS, (255, 255, 255))
+        self.ball = Ball(Point(WIDTH/2, HEIGHT/2), BALL_RADIUS, (RED, BLUE , GREEN ))
         self.paddle_left = Paddle(Point(10, HEIGHT/2), 10, 60, (255, 255, 255))
         self.paddle_right = Paddle(Point(WIDTH - 10, HEIGHT/2), 10, 60, (255, 255, 255))
 
@@ -103,18 +104,18 @@ class Pong:
 
         if self.ball.wall_index() == 0:
             self.reset()
-            self.score[1] += 1
+            self.score[0] += 2
             print("Player 2 wins!")
 
         if self.ball.wall_index() == 1:
             self.reset()
-            self.score[0] += 1
+            self.score[1] += 2
             print("Player 1 wins!")
 
-        pygame.display.set_caption('SCR Onboarding 2024 | Pong ({} - {})'.format(self.score[0], self.score[1]))
+        pygame.display.set_caption('SCR Onboarding 2016 | Pong ({} - {})'.format(self.score[0], self.score[1]))
 
     def draw(self, canvas):
-        canvas.fill((0, 0, 0))
+        canvas.fill(0, 0, 0)
         self.ball.draw(canvas)
         self.paddle_left.draw(canvas)
         self.paddle_right.draw(canvas)
@@ -131,8 +132,8 @@ class Pong:
 
     def reset(self):
         self.ball = Ball(Point(WIDTH/2, HEIGHT/2), BALL_RADIUS, (255, 255, 255))
-        self.paddle_left = Paddle(Point(10, HEIGHT/2), 10, 60, (255, 255, 255))
-        self.paddle_right = Paddle(Point(WIDTH - 10, HEIGHT/2), 10, 60, (255, 255, 255))
+        self.paddle_left = Paddle(Point(10, HEIGHT/2), 10, 60, (135, 206, 235))
+        self.paddle_right = Paddle(Point(WIDTH - 10, HEIGHT/2), 10, 60, (76, 0, 76))
 
 
 pong = Pong()
@@ -150,9 +151,8 @@ while True:
 
     if keys[K_DOWN]:
         pong.movePaddle(10)
-
+    RED, GREEN, BLUE = random.randint(255, 255), random.randint(255, 255), random.randint(255, 255)
     pong.update()
     pong.draw(window)
-
     pygame.display.update()
-    fps.tick(30)
+    fps.tick(40)

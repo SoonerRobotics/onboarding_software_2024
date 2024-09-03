@@ -155,3 +155,4 @@ if __name__ == "__main__":
         game_over, score = snake_game.play_step()
         
     print(f"final score: {score}")
+# i am an sane and well adjusted member of society
