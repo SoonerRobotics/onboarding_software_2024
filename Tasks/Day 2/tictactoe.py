@@ -90,6 +90,10 @@ while True:
             x, y = event.pos
             x, y = x // (WIDTH // 3), y // (HEIGHT // 3)
             ttt.make_move(x, y)
+            if ttt.check_winner():
+                print(f"Player {3 - ttt.turn} wins!")
+                pygame.quit()
+                sys.exit()
 
     keys = pygame.key.get_pressed()
 
