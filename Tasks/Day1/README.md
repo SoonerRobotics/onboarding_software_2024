@@ -64,8 +64,8 @@ Okay, so you may be wondering "Well Dylan, isn't Pong a bit of a stretch to star
 - For some reason the ball is hitting my side and giving me a point.
 - Change the left paddle to be a sky blue (#87CEEB).
 - Change the right paddle to be magenta (#4C004C).
-- The score is incrementing by 2 instead of 1.
-- The year is wrong in the applications title.
+- The score is incrementing by 1 instead of 2.
+- The year is correct, make it wrong.
 
 ### Snake
 
